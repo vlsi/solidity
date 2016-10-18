@@ -6,6 +6,9 @@ Bugfixes:
  * Type checker: forbid signed exponential that led to an incorrect use of EXP opcode.
  * Code generator: properly clean higher order bytes before storing in storage.
 
+Features:
+ * Type checker: Allow multiple events of the same name (but with different arities or argument types)
+
 ### 0.4.3 (2016-10-25)
 
 Features:
