@@ -225,7 +225,42 @@ If ``solc`` is called with the option ``--link``, all input files are interprete
 Internals - Non-Canonical Value Representations in EVM
 ******************************************************
 
-We chose the canonical representation of a ``bool`` on EVM to be either ``0`` or ``1``.  The canonical representation of an ``enum`` is chosen to be an integer from ``0`` up to ``n - 1``, where ``n`` is the number of members of the ``enum``.  For each type we have a clean-up function that either maps an EVM word into either an exception or a canonical representation of the type.  The cleanup funciton is identity on the canonical representtons.  Internally the Solidity compiler does not assume the stack elements are in canonical representation.  The cleanup function is applied when necessary, i.e.,  before operations that are not homomorphic with the cleanup function (when we judge the homomorphisity, exceptions are considered equal whether they occur early or late).  Moreover, since taking a Keccack hash is not homomorphic to any non-identity cleanup functions, we apply the cleanup function before storing values to the memory.  Similarly, we clean up values before storing them into the storage because different representations can be observed in the persistent storage.  The cleanup function for ``bool`` is taking ``ISZERO`` operation twice.  This cleanup function can be safely omitted when a boolean is used as a condition for ``JUMPI`` in EVM.
+For compiling a Solidity program into EVM bytecode, we need to define correspondence
+between Solidity values and EVM words.
+Sometimes different EVM words represent the same Soldity value.  This poses a problem when
+we check equality.  If we naively compare two EVM words, they might be different though
+they represent the same Solidity value.  A canonical representation of a type is a set
+of EVM words that represent distinct Solidity values.  If we convert EVM words into
+canonical representations, the equality on EVM words match the equality on Solidity values.
+
+We chose the canonical representation of a ``bool`` on EVM to be
+either ``0`` or ``1``.  The canonical representation of an ``enum`` is
+chosen to be an integer from ``0`` up to ``n - 1``, where ``n`` is the
+number of members of the ``enum``.  The canonical representation of signed integer is
+a 256-bit signed integer that represents the integer.
+
+For each type we have a clean-up
+function that maps an EVM word into either an exception or a
+canonical representation of the type.  The cleanup function is
+identity on the canonical representtons.  Internally the Solidity
+compiler does not assume that the stack elements are in canonical
+representation.  The cleanup function is applied when necessary, i.e.,
+before operations that are not homomorphic with the cleanup function
+(when we judge the homomorphisity, exceptions are considered equal
+whether they occur early or late).  Moreover, since taking a Keccack
+hash is not homomorphic to any non-identity cleanup functions, we
+apply the cleanup function before storing values to the memory.
+Similarly, we clean up values before storing them into the storage
+because different representations can be observed in the persistent
+storage.
+
+The cleanup function for ``bool`` is taking ``ISZERO``
+operation twice.  This cleanup function can be safely omitted when a
+boolean is used as a condition for ``JUMPI`` in EVM.
+
+The cleanup function for unsigned ints are modulo operations.
+The cleanup function for signed ints are ``SIGNEXTEND`` operations.
+They are not homomorphic to most operations that might throw exceptions for overflows.
 
 ***************
 Tips and Tricks

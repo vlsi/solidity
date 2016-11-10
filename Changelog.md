@@ -15,7 +15,7 @@ Bugfixes:
  * Interface JSON: do not include trailing new line.
 
 Bugfixes:
- * Code generator: higher bits in a boolean argument are ignored.
+ * Code generator: any non-zero value given as a boolean argument is now converted into 1.
 
 ### 0.4.4 (2016-10-31)
 
