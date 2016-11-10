@@ -4457,6 +4457,25 @@ BOOST_AUTO_TEST_CASE(super_overload)
 	BOOST_CHECK(callContractFunction("h()") == encodeArgs(2));
 }
 
+BOOST_AUTO_TEST_CASE(bool_conversion)
+{
+	char const* sourceCode = R"(
+		contract C {
+			function f(bool b) returns(uint) {
+				if (b)
+					return 1;
+				else
+					return 0;
+			}
+		}
+	)";
+	compileAndRun(sourceCode, 0, "C");
+	BOOST_CHECK(callContractFunction("f(bool)", 0) == encodeArgs(0));
+	BOOST_CHECK(callContractFunction("f(bool)", 1) == encodeArgs(1));
+	BOOST_CHECK(callContractFunction("f(bool)", 2) == encodeArgs(1));
+	BOOST_CHECK(callContractFunction("f(bool)", 3) == encodeArgs(1));
+}
+
 BOOST_AUTO_TEST_CASE(packed_storage_signed)
 {
 	char const* sourceCode = R"(
