@@ -221,6 +221,12 @@ Either add ``--libraries "Math:0x12345678901234567890 Heap:0xabcdef0123456"`` to
 
 If ``solc`` is called with the option ``--link``, all input files are interpreted to be unlinked binaries (hex-encoded) in the ``__LibraryName____``-format given above and are linked in-place (if the input is read from stdin, it is written to stdout). All options except ``--libraries`` are ignored (including ``-o``) in this case.
 
+******************************************************
+Internals - Non-Canonical Value Representations in EVM
+******************************************************
+
+We chose the canonical representation of a ``bool`` on EVM to be either ``0`` or ``1``.  The canonical representation of an ``enum`` is chosen to be an integer from ``0`` up to ``n - 1``, where ``n`` is the number of members of the ``enum``.  For each type we have a clean-up function that either maps an EVM word into either an exception or a canonical representation of the type.  The cleanup funciton is identity on the canonical representtons.  Internally the Solidity compiler does not assume the stack elements are in canonical representation.  The cleanup function is applied when necessary, i.e.,  before operations that are not homomorphic with the cleanup function (when we judge the homomorphisity, exceptions are considered equal whether they occur early or late).  Moreover, since taking a Keccack hash is not homomorphic to any non-identity cleanup functions, we apply the cleanup function before storing values to the memory.  Similarly, we clean up values before storing them into the storage because different representations can be observed in the persistent storage.  The cleanup function for ``bool`` is taking ``ISZERO`` operation twice.  This cleanup function can be safely omitted when a boolean is used as a condition for ``JUMPI`` in EVM.
+
 ***************
 Tips and Tricks
 ***************
