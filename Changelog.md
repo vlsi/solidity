@@ -14,6 +14,9 @@ Bugfixes:
  * Type checker: disallow conversion between different enum types.
  * Interface JSON: do not include trailing new line.
 
+Bugfixes:
+ * Code generator: higher bits in a boolean argument are ignored.
+
 ### 0.4.4 (2016-10-31)
 
 Bugfixes:
