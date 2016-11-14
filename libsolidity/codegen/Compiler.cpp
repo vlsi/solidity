@@ -30,7 +30,8 @@ using namespace dev::solidity;
 
 void Compiler::compileContract(
 	ContractDefinition const& _contract,
-	std::map<const ContractDefinition*, eth::Assembly const*> const& _contracts
+	std::map<const ContractDefinition*, eth::Assembly const*> const& _contracts,
+	h256 const& _metadataHash
 )
 {
 	ContractCompiler runtimeCompiler(m_runtimeContext, m_optimize);
@@ -42,11 +43,8 @@ void Compiler::compileContract(
 	if (m_optimize)
 		m_context.optimise(m_optimizeRuns);
 
-	if (_contract.isLibrary())
-	{
-		solAssert(m_runtimeSub != size_t(-1), "");
-		m_context.injectVersionStampIntoSub(m_runtimeSub);
-	}
+	solAssert(m_runtimeSub != size_t(-1), "");
+	m_context.injectMetadataHashIntoSub(m_runtimeSub, _metadataHash);
 }
 
 void Compiler::compileClone(

@@ -144,6 +144,9 @@ public:
 	/// Prepends "PUSH <compiler version number> POP"
 	void injectVersionStampIntoSub(size_t _subIndex);
 
+	/// Prepends "PUSH <metadata hash> POP"
+	void injectMetadataHashIntoSub(size_t _subIndex, h256 const& _metadataHash);
+
 	void optimise(unsigned _runs = 200) { m_asm.optimise(true, true, _runs); }
 
 	eth::Assembly const& assembly() const { return m_asm; }
