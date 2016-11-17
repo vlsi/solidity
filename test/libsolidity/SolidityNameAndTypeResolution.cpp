@@ -2511,7 +2511,7 @@ BOOST_AUTO_TEST_CASE(non_initialized_references)
 		}
 	)";
 
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Uninitialized storage pointer"));
 }
 
 BOOST_AUTO_TEST_CASE(sha3_with_large_integer_constant)
@@ -3896,7 +3896,7 @@ BOOST_AUTO_TEST_CASE(unused_return_value_send)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Return value of low-level calls not used"));
 }
 
 BOOST_AUTO_TEST_CASE(unused_return_value_call)
@@ -3908,7 +3908,7 @@ BOOST_AUTO_TEST_CASE(unused_return_value_call)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Return value of low-level calls not used"));
 }
 
 BOOST_AUTO_TEST_CASE(unused_return_value_call_value)
@@ -3920,7 +3920,7 @@ BOOST_AUTO_TEST_CASE(unused_return_value_call_value)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Return value of low-level calls not used"));
 }
 
 BOOST_AUTO_TEST_CASE(unused_return_value_callcode)
@@ -3932,7 +3932,7 @@ BOOST_AUTO_TEST_CASE(unused_return_value_callcode)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Return value of low-level calls not used"));
 }
 
 BOOST_AUTO_TEST_CASE(unused_return_value_delegatecall)
@@ -3944,7 +3944,7 @@ BOOST_AUTO_TEST_CASE(unused_return_value_delegatecall)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Return value of low-level calls not used"));
 }
 
 BOOST_AUTO_TEST_CASE(modifier_without_underscore)
@@ -4069,7 +4069,7 @@ BOOST_AUTO_TEST_CASE(warn_nonpresent_pragma)
 	auto sourceAndError = parseAnalyseAndReturnError(text, true);
 	BOOST_REQUIRE(!!sourceAndError.second);
 	BOOST_REQUIRE(!!sourceAndError.first);
-	BOOST_CHECK(sourceAndError.second->type() == Error::Type::Warning);
+	BOOST_CHECK(sourceAndError.second->regex_search("Source file does not specify required compiler version!"));
 }
 
 BOOST_AUTO_TEST_CASE(unsatisfied_version)
@@ -4193,7 +4193,7 @@ BOOST_AUTO_TEST_CASE(inline_assembly_unbalanced_positive_stack)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Inline assembly block is not balanced"));
 }
 
 BOOST_AUTO_TEST_CASE(inline_assembly_unbalanced_negative_stack)
@@ -4207,7 +4207,7 @@ BOOST_AUTO_TEST_CASE(inline_assembly_unbalanced_negative_stack)
 			}
 		}
 	)";
-	BOOST_CHECK(expectError(text, true).type() == Error::Type::Warning);
+	BOOST_CHECK(expectError(text, true).regex_search("Inline assembly block is not balanced"));
 }
 
 BOOST_AUTO_TEST_CASE(inline_assembly_in_modifier)
