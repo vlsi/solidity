@@ -45,17 +45,15 @@ namespace
 {
 
 pair<ASTPointer<SourceUnit>, std::shared_ptr<Error const>>
-parseAnalyseAndReturnError(string const& _source, bool _reportWarnings = false, bool _insertVersionPragma = true)
+parseAnalyseAndReturnError(string const& _source, bool _reportWarnings = false)
 {
-	// Silence compiler version warning
-	string source = _insertVersionPragma ? "pragma solidity >=0.0;\n" + _source : _source;
 	ErrorList errors;
 	Parser parser(errors);
 	ASTPointer<SourceUnit> sourceUnit;
 	// catch exceptions for a transition period
 	try
 	{
-		sourceUnit = parser.parse(std::make_shared<Scanner>(CharStream(source)));
+		sourceUnit = parser.parse(std::make_shared<Scanner>(CharStream(_source)));
 		if(!sourceUnit)
 			BOOST_FAIL("Parsing failed in type checker test.");
 
@@ -4068,7 +4066,7 @@ BOOST_AUTO_TEST_CASE(non_payable_constructor)
 BOOST_AUTO_TEST_CASE(warn_nonpresent_pragma)
 {
 	char const* text = "contract C {}";
-	auto sourceAndError = parseAnalyseAndReturnError(text, true, false);
+	auto sourceAndError = parseAnalyseAndReturnError(text, true);
 	BOOST_REQUIRE(!!sourceAndError.second);
 	BOOST_REQUIRE(!!sourceAndError.first);
 	BOOST_CHECK(sourceAndError.second->type() == Error::Type::Warning);
