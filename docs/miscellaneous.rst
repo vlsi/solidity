@@ -74,6 +74,12 @@ Solidity always places new objects at the free memory pointer and memory is neve
 
 .. index: memory layout
 
+*******************
+Layout of Call Data
+*******************
+
+When a Solidity contract is deployed and when it is called, the input data follows the format in `the ABI specification <https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI>`_.  The ABI specification requires arguments to be padded to multiples of 32 bytes.  When a Solidity contract calls another Solidity contract externally, when you observe the ``CALL`` instruction at the EVM level at runtime, the calldata is formatted according to the ABI specification.  A Solidity contract expects data in the ABI when it is called externally.
+
 *****************
 Esoteric Features
 *****************
